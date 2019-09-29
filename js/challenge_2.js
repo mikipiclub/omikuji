@@ -5,6 +5,7 @@ const errorText = document.getElementById('errorText');
 const pattern = /^([0-9]|[1-9][0-9]|100)$/
 const data = document.getElementById('data');
 let pro, pro1, pro2, pro3, pro4, pro5, total;
+// 関数外からアクセスするには？
 
 let count_dk = 0; //大吉
 let count_ck = 0; //中吉
@@ -23,12 +24,12 @@ omikuji.disabled = true;
 click.addEventListener('click', () => {
   // 入力した数字
   pro = [];
-  let $in = $("#i_number").children();
 
   // 1~100の数字なら配列に格納、エラーならfalse
   for (let i = 0; i < num.length; i++) {
     if (num[i].value.match(pattern)) {
       pro[i] = Number(num[i].value);
+      console.log(pro[i])
     } else {
       pro[i] = false;
     }
@@ -50,6 +51,7 @@ click.addEventListener('click', () => {
       omikuji.disabled = true;
       errorText.innerHTML = "<span style='color: red;'>エラー</span>";
     }
+
   } else {
     omikuji.disabled = true;
     errorText.innerHTML = "<span style='color: red;'>エラー</span>";
@@ -85,116 +87,44 @@ omikuji.addEventListener('click', () => {
     return a + b;
   });
 
-  // 引いた数字
-  const n = intRandoms();
-  console.log(`n ==> ${n}`);
+  
 
   // 引いた数字の範囲が～～なら
-  if (n <= pro[0]) { //0-13
-    count_dk++;
-    count++;
-  } else if (n <= pro1 && n > pro[0]) { //20% 14-33
-    count_ck++;
-    count++;
-  } else if (n <= pro2 && n > pro1) {//20% 34-53
-    count_shk++;
-    count++;
-  } else if (n <= pro3 && n > pro2) { //20% 54-73
-    count_k++;
-    count++;
-  } else if (n <= pro4 && n > pro3) { //20% 74-94
-    count_suk++;
-    count++;
-  } else if (n <= pro5 && n > pro4) { //10% 94-99
-    count_kyo++;
-    count++;
-  } else if (n > pro5) { //99-100
-    count_dkyo++;
-    count++;
-  }
+  for (let i = 0; i < 100000; i++) {
+    let intRandoms = () => {
+      return Math.floor(Math.random() * 101);
+    }
+    let n = intRandoms();
 
-  console.log(`カウント総数${count}`);
+    if (n <= pro[0]) { //0-13
+      count_dk++;
+    } else if (n <= pro1 && n > pro[0]) { //20% 14-33
+      count_ck++;
+    } else if (n <= pro2 && n > pro1) {//20% 34-53
+      count_shk++;
+    } else if (n <= pro3 && n > pro2) { //20% 54-73
+      count_k++;
+    } else if (n <= pro4 && n > pro3) { //20% 74-94
+      count_suk++;
+    } else if (n <= pro5 && n > pro4) { //10% 94-99
+      count_kyo++;
+    } else if (n > pro5) { //99-100
+      count_dkyo++;
+    }
+  }
 
   // 結果をカウントした配列
   const counts = [count_dk, count_ck, count_shk, count_k, count_suk, count_kyo, count_dkyo];
   console.log(`各カウントの配列${counts}`);
 
   // 確率の計算した数を入れる配列
-  pronumbers = [];
+  let pronumbers = [];
 
   // 結果の回数 / クリックした（引いた）回数 * 100を配列に代入
-  for (var i = 0; i < 100000; i++) {
-  
-    const n = intRandoms();
-
-    if (n <= ) { //0-13
-      td2.innerHTML = "大吉";
-      count_dk++;
-      count++;
-    } else if (n <= pro1 && n > pro[0]) { //20% 14-33
-      td2.innerHTML = "中吉";
-      count_ck++;
-      count++;
-    } else if (n <= pro2 && n > pro1) {//20% 34-53
-      td2.innerHTML = "小吉";
-      count_shk++;
-      count++;
-    } else if (n <= pro3 && n > pro2) { //20% 54-73
-      td2.innerHTML = "吉";
-      count_k++;
-      count++;
-    } else if (n <= pro4 && n > pro3) { //20% 74-94
-      td2.innerHTML = "末吉";
-      count_suk++;
-      count++;
-    } else if (n <= pro5 && n > pro4) { //10% 94-99
-      td2.innerHTML = "凶";
-      count_kyo++;
-      count++;
-    } else if (n > pro5) { //99-100
-      td2.innerHTML = "大凶";
-      count_dkyo++;
-      count++;
-    }
-
-    pronumbers.push(counts[i] / count * 100);
-    console.log(pronumbers);
-}
-  
-
-let intRandoms = () => {
-  return Math.floor(Math.random() * 101);
-}
-
-
-  // // 書き出す
-  // switch () {
-  //   case "大吉":
-  //     td3.innerHTML = pronumbers[0].toFixed(3) + "％";
-  //     break;
-  //   case "中吉":
-  //     td3.innerHTML = pronumbers[1].toFixed(3) + "％";
-  //     break;
-  //   case "小吉":
-  //     td3.innerHTML = pronumbers[2].toFixed(3) + "％";
-  //     break;
-  //   case "吉":
-  //     td3.innerHTML = pronumbers[3].toFixed(3) + "％";
-  //     break;
-  //   case "末吉":
-  //     td3.innerHTML = pronumbers[4].toFixed(3) + "％";
-  //     break;
-  //   case "凶":
-  //     td3.innerHTML = pronumbers[5].toFixed(3) + "％";
-  //     break;
-  //   case "大凶":
-  //     td3.innerHTML = pronumbers[6].toFixed(3) + "％";
-  //     break;
-  // }
-
+  for (var i = 0; i < counts.length; i++) {
+    pronumbers.push((counts[i] / 100000 * 100).toFixed(2));
+    let t = $('#resultTable tbody tr').eq(i).children('td').eq(1);
+    t.html(pronumbers[i] + '%');
+  }
 
 }, false);
-
-let intRandoms = () => {
-  return Math.floor(Math.random() * 101);
-}
